@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <string>
 #include <sstream>
 
 class Matrix {
@@ -21,6 +20,11 @@ public:
     return m_data[row * m_cols + col];
   }
 
+  const double &operator()(size_t row, size_t col) const{
+    return m_data[row * m_cols + col];
+  }
+
+ 
  
 private:
   size_t m_rows;
@@ -29,27 +33,28 @@ private:
 
 };
 
+std::string ToString(const Matrix &matrix){
+
+  std::stringstream outStream;
+  for (size_t i = 0; i < matrix.rows(); ++i) {
+
+    for (size_t j = 0; j < matrix.cols(); ++j) {
+
+      outStream << matrix(i, j) << " ";
+    }
+    outStream << std::endl;
+  }
+return outStream.str();
+
+}
 
 int main(){
 
 	constexpr size_t rows = 4;
 	constexpr size_t cols = 4;
 
-	Matrix A(rows, cols);
-	Matrix B(rows, cols);
-	Matrix C(rows, cols);
+  Matrix A(rows,cols);
+  ToString(A);
 
-	for(size_t i = 0; i < A.rows(); ++i) {
-		for(size_t j = 0; j < A.cols(); ++j) {
-	 		 A(i,j) = 1;
-	 		 B(i,j)=1;
-	 		 C(i,j)=0;
-		}
-	}
-
-
-	//C=A*B;
-	
-	
 	return 0;
 }
