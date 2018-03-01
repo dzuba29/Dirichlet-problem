@@ -112,7 +112,7 @@ std::vector<double> get_random_OpenMp(size_t size){ //get random numbers
   {
     std::random_device rd;
     std::mt19937_64 gen(rd());
-    std::normal_distribution<double> dis(1, 2);
+    std::cauchy_distribution<double>dis(1, 2);
 
     #pragma omp for schedule(static)
     for (size_t i = 0; i < size; i++) {
