@@ -130,15 +130,19 @@ int main(){
 	
   auto time1 = std::chrono::steady_clock::now(); //start
 
-  Matrix A =Matrix::rand(10,10);
-  Matrix B = Matrix::rand(10,10);
+  Matrix A = Matrix::rand(1000,1000);
+  Matrix B = Matrix::rand(1000,1000);
+  Matrix C(1000,1000);
 
-  std::cout<<"\nA MATRIX\n" << ToString_Linear(A) << std::endl;
-  std::cout<<"\nB MATRIX\n" << ToString_Linear(B) << std::endl;
 
+  C=A*B;
 
   
   auto time2 = std::chrono::steady_clock::now(); //end
+
+  //std::cout<<"\nA MATRIX\n" << ToString_Linear(A) << std::endl;
+  //std::cout<<"\nB MATRIX\n" << ToString_Linear(B) << std::endl;
+  //std::cout<<"\nC MATRIX\n" << ToString_Linear(C) << std::endl;
 
   auto delta= std::chrono::duration_cast<std::chrono::duration<double>>(time2 - time1);
 
