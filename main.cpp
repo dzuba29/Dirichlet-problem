@@ -31,9 +31,10 @@ public:
 
   const double &operator()(size_t row, size_t col) const{
     return m_data[row * m_cols + col];
-  }
+  } 
 
- 
+  Matrix operator * (const Matrix& matrix);
+
 private:
   size_t m_rows;
   size_t m_cols;
@@ -62,6 +63,7 @@ return outStream.str();
 }
 
 
+
 Matrix MultLinear(const Matrix &A,const Matrix &B){ //bad multi 
 
 
@@ -79,7 +81,9 @@ Matrix MultLinear(const Matrix &A,const Matrix &B){ //bad multi
   return C;
 }
 
-
+Matrix Matrix::operator*(const Matrix& matrix) {
+  return MultLinear((*this), matrix);
+}
 
 
 //openmp functions 
@@ -113,7 +117,7 @@ int main(){
   auto time1 = std::chrono::steady_clock::now(); //start
 
   Matrix A(rows,cols);
-  Matirx B(rows,cols);
+  Matrix B(rows,cols);
   get_random_OpenMp(A);
   get_random_OpenMp(B);
   std::cout<<"\nA MATRIX\n" << ToString_Linear(A) << std::endl;
