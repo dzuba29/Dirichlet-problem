@@ -6,16 +6,18 @@
 #include <chrono>
 #include <stdexcept>
 
+std::vector<double> get_random_OpenMp(size_t size);
 
 class Matrix {
 
 public:
 
   Matrix(size_t rows, size_t cols)
-      : m_rows(rows)
-      , m_cols(cols)
-      , m_data(rows * cols)
+    : m_rows(rows)
+    , m_cols(cols)
+    , m_data(rows * cols)
   {}
+
 
   size_t rows() const {
     return m_rows;
@@ -35,10 +37,25 @@ public:
 
   Matrix operator * (const Matrix& matrix);
 
+  static Matrix rand(size_t rows,size_t cols){
+
+    return Matrix(rows,cols,get_random_OpenMp(rows*cols));
+
+  }
+
 private:
+
+  Matrix(size_t rows, size_t cols,const std::vector<double> &data)
+      : m_rows(rows)
+      , m_cols(cols)
+      , m_data(data)
+  {}
+
   size_t m_rows;
   size_t m_cols;
   std::vector<double> m_data;
+
+
  
 };
 
@@ -68,11 +85,10 @@ Matrix MultLinear(const Matrix &A,const Matrix &B){ //bad multi
 
 
   Matrix C(A.rows(),B.cols());
-
   if (A.cols() == B.rows()) {
-        for (int i = 0; i < C.rows(); ++i)
-            for (int j = 0; j < C.cols(); ++j)
-                for (int k = 0; k < C.rows(); ++k)
+        for (size_t i = 0; i < C.rows(); ++i)
+            for (size_t j = 0; j < C.cols(); ++j)
+                for (size_t k = 0; k < C.rows(); ++k)
                     C(i,j) += A(i,k) * B(k,j);
   }
     else
@@ -88,8 +104,9 @@ Matrix Matrix::operator*(const Matrix& matrix) {
 
 //openmp functions 
 
-void get_random_OpenMp(Matrix &matrix){ //get random numbers
+std::vector<double> get_random_OpenMp(size_t size){ //get random numbers
 
+  std::vector<double> result(size);
 
   #pragma omp parallel shared(result)
   {
@@ -98,28 +115,24 @@ void get_random_OpenMp(Matrix &matrix){ //get random numbers
     std::normal_distribution<double> dis(1, 2);
 
     #pragma omp for schedule(static)
-    for (size_t i = 0; i < matrix.rows(); ++i) {
-
-      for (size_t j = 0; j < matrix.cols(); ++j) {
-
-       matrix(i, j)=dis(gen);
-     }
+    for (size_t i = 0; i < size; i++) {
+      result[i] = dis(gen);
     }
   }
+
+  return result;
+ 
 
 }
 
 int main(){
 
-	constexpr size_t rows = 10;
-	constexpr size_t cols = 10;
-
+	
   auto time1 = std::chrono::steady_clock::now(); //start
 
-  Matrix A(rows,cols);
-  Matrix B(rows,cols);
-  get_random_OpenMp(A);
-  get_random_OpenMp(B);
+  Matrix A =Matrix::rand(10,10);
+  Matrix B = Matrix::rand(10,10);
+
   std::cout<<"\nA MATRIX\n" << ToString_Linear(A) << std::endl;
   std::cout<<"\nB MATRIX\n" << ToString_Linear(B) << std::endl;
 
@@ -133,3 +146,4 @@ int main(){
 
 	return 0;
 }
+//flags -Wall -Wextra -Wpedantic -fopenmp or -openmp
