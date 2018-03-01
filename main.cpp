@@ -85,6 +85,7 @@ Matrix MultLinear(const Matrix &A,const Matrix &B){ //bad multi
 
 
   Matrix C(A.rows(),B.cols());
+
   if (A.cols() == B.rows()) {
         for (size_t i = 0; i < C.rows(); ++i)
             for (size_t j = 0; j < C.cols(); ++j)
@@ -96,11 +97,6 @@ Matrix MultLinear(const Matrix &A,const Matrix &B){ //bad multi
 
   return C;
 }
-
-Matrix Matrix::operator*(const Matrix& matrix) {
-  return MultLinear((*this), matrix);
-}
-
 
 //openmp functions 
 
@@ -124,6 +120,43 @@ std::vector<double> get_random_OpenMp(size_t size){ //get random numbers
  
 
 }
+
+
+Matrix MultOpenMp(const Matrix &A,const Matrix &B){ 
+
+
+  Matrix C(A.rows(),B.cols());
+
+  size_t i,j,k;
+  double localResult;
+  
+  if (A.cols() == B.rows()) {
+
+    #pragma omp parallel for private(i,j,k,localResult)
+
+        for (i = 0; i < C.rows(); ++i)
+        {
+            for (j = 0; j < C.cols(); ++j)
+            {
+                for (k = 0; k < C.rows(); ++k)
+                {
+                   localResult+= A(i,k) * B(k,j);
+                }
+                C(i,j)=localResult;
+            }
+        }
+    
+  }
+    else
+        throw std::invalid_argument("wrong dims!");
+
+  return C;
+}
+
+Matrix Matrix::operator*(const Matrix& matrix) {
+  return MultOpenMp((*this), matrix);
+}
+
 
 int main(){
 
