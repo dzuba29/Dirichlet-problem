@@ -59,6 +59,11 @@ private:
  
 };
 
+void benchmark(size_t dim, double initDuration, double mulDuration, double runtimeDuration) {
+  std::cout.setf(std::ios::fixed);
+  std::cout.precision(6);
+  std::cout << "║ " << dim << "\t" << initDuration << "\t" << mulDuration << "\t" << runtimeDuration << "\t" << "║" << std::endl;
+}
 
 
 //linear functions
@@ -158,29 +163,43 @@ Matrix Matrix::operator*(const Matrix& matrix) {
 }
 
 
-int main(){
+int main(int argc, char* argv[]){
 
-	
-  auto time1 = std::chrono::steady_clock::now(); //start
+  auto startTime = std::chrono::steady_clock::now();
 
-  Matrix A = Matrix::rand(1000,1000);
-  Matrix B = Matrix::rand(1000,1000);
-  Matrix C(1000,1000);
 
+  size_t rows=10;
+  size_t cols=10;
+
+  if (argc > 1){
+    std::istringstream ss(argv[1]);
+    int dim;
+    if (!(ss >> dim)){
+      throw std::invalid_argument("Wrong ARGV");
+    } else {
+      rows = dim;
+      cols = dim;
+    }
+}
+
+  Matrix A = Matrix::rand(rows,cols);
+  Matrix B = Matrix::rand(rows,cols);
+  Matrix C(rows,cols);
+
+  auto initTime = std::chrono::steady_clock::now();
 
   C=A*B;
+  
+  auto mulTime = std::chrono::steady_clock::now(); //end
+
+
 
   
-  auto time2 = std::chrono::steady_clock::now(); //end
+  auto initDuration = std::chrono::duration_cast<std::chrono::duration<double>>(initTime - startTime);
+  auto mulDuration = std::chrono::duration_cast<std::chrono::duration<double>>(mulTime - initTime);
+  auto runtimeDuration = std::chrono::duration_cast<std::chrono::duration<double>>(mulTime - startTime);
 
-  //std::cout<<"\nA MATRIX\n" << ToString_Linear(A) << std::endl;
-  //std::cout<<"\nB MATRIX\n" << ToString_Linear(B) << std::endl;
-  //std::cout<<"\nC MATRIX\n" << ToString_Linear(C) << std::endl;
-
-  auto delta= std::chrono::duration_cast<std::chrono::duration<double>>(time2 - time1);
-
-  std::cout<<delta.count()<<std::endl;
-
+  benchmark(rows, initDuration.count(), mulDuration.count(), runtimeDuration.count());
 	return 0;
 }
 //flags -Wall -Wextra -Wpedantic -fopenmp or -openmp
