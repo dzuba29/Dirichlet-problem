@@ -1,10 +1,20 @@
 #!/bin/bash
-for var in 1 2 3 4
+#SBATCH --job-name=Potashev_matrix
+#SBATCH --output=output_%j.txt
+#SBATCH --ntasks=1
+#
+#SBATCH --cpus-per-task=20
+#
+#SBATCH --time=10:00
+#SBATCH --mem-per-cpu=100
+
+for var in 20
 do 
 
-export OMP_NUM_THREADS=$var
+omp_threads=$var
+export OMP_NUM_THREADS=$omp_threads
 
-echo "threads:" $var
+echo "threads:" $omp_threads
 echo "╔═══════════════════════════════════╗"
 echo "║   dim    ║      mul    ║  runtime ║"
 echo "╟───────────────────────────────────╢"

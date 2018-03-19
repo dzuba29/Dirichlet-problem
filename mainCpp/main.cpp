@@ -59,12 +59,15 @@ private:
  
 };
 
-void benchmark(size_t dim, double initDuration, double mulDuration, double runtimeDuration) {
+void benchmark(size_t dim, double mulDuration, double runtimeDuration) {
   std::cout.setf(std::ios::fixed);
-  std::cout.precision(6);
-  std::cout << "║ " << dim << "\t" << initDuration << "\t" << mulDuration << "\t" << runtimeDuration << "\t" << "║" << std::endl;
+  std::cout.precision(5);
+  std::cout << "║   " << dim << "║   "<< mulDuration << "║   "<< runtimeDuration<< std::endl;
 }
 
+void benchmark_to_csv(int threads, size_t dim, double mulDuration, double runtimeDuration) {
+  std::cout << threads << "," << dim << "," << mulDuration << "," << runtimeDuration << std::endl;
+}
 
 //linear functions
 
@@ -180,26 +183,25 @@ int main(int argc, char* argv[]){
       rows = dim;
       cols = dim;
     }
-}
+  } 
 
   Matrix A = Matrix::rand(rows,cols);
   Matrix B = Matrix::rand(rows,cols);
   Matrix C(rows,cols);
-
   auto initTime = std::chrono::steady_clock::now();
-
   C=A*B;
   
   auto mulTime = std::chrono::steady_clock::now(); //end
 
 
 
-  
-  auto initDuration = std::chrono::duration_cast<std::chrono::duration<double>>(initTime - startTime);
   auto mulDuration = std::chrono::duration_cast<std::chrono::duration<double>>(mulTime - initTime);
   auto runtimeDuration = std::chrono::duration_cast<std::chrono::duration<double>>(mulTime - startTime);
 
-  benchmark(rows, initDuration.count(), mulDuration.count(), runtimeDuration.count());
+  //benchmark(rows, mulDuration.count(), runtimeDuration.count());
+
+  benchmark_to_csv(omp_get_max_threads(), rows, mulDuration.count(), runtimeDuration.count());
+  
 	return 0;
 }
 //flags -Wall -Wextra -Wpedantic -fopenmp or -openmp
