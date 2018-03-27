@@ -136,7 +136,7 @@ Matrix MultOpenMp(const Matrix &A,const Matrix &B){
   Matrix C(A.rows(),B.cols());
 
   size_t i,j,k;
-  double localResult;
+  double localResult=0;
   
   if (A.cols() == B.rows()) {
 
@@ -205,3 +205,5 @@ int main(int argc, char* argv[]){
 	return 0;
 }
 //flags -Wall -Wextra -Wpedantic -fopenmp or -openmp
+//#### ssh student-math-03@fujitsu-hpc-02.narfu.ru
+//#### Cneltyn2014
