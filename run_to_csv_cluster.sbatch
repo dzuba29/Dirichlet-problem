@@ -5,7 +5,7 @@
 #
 #SBATCH --cpus-per-task=20
 #
-#SBATCH --time=15:00
+#SBATCH --time=55:00
 #SBATCH --mem-per-cpu=100
 
 num_for_repeat=5
