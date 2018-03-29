@@ -142,9 +142,9 @@ Matrix MultOpenMp(const Matrix &A,const Matrix &B){
 
     #pragma omp parallel for private(i,j,k,localResult)
 
-        for (i = 0; i < C.rows(); ++i)
+        for (j = 0; j < C.rows(); ++j)
         {
-            for (j = 0; j < C.cols(); ++j)
+            for (i = 0; i < C.cols(); ++i)
             {
                 for (k = 0; k < C.rows(); ++k)
                 {
@@ -189,6 +189,7 @@ int main(int argc, char* argv[]){
   Matrix B = Matrix::rand(rows,cols);
   Matrix C(rows,cols);
   auto initTime = std::chrono::steady_clock::now();
+
   C=A*B;
   
   auto mulTime = std::chrono::steady_clock::now(); //end

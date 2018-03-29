@@ -1,10 +1,10 @@
 #!/bin/bash
 
-touch benchmark.csv
+touch benchmark_j_i_k.csv
 
 num_for_repeat=5
 
-echo "Threads,Dimension,MultTime,RunTime" > benchmark.csv
+echo "Threads,Dimension,MultTime,RunTime" > benchmark_j_i_k.csv
 
 for omp_threads in 1 2 3 4 
 do
@@ -13,7 +13,7 @@ do
 	do
 		for ((i=0; i < $num_for_repeat; i++))
 		do
-		./mainCpp/main $dim >> benchmark.csv
+		./mainCpp/main $dim >> benchmark_j_i_k.csv
 		done
 	done
 done
