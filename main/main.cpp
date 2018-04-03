@@ -142,9 +142,9 @@ Matrix MultOpenMp(const Matrix &A,const Matrix &B){
 
     #pragma omp parallel for private(i,j,k,localResult)
 
-        for (j = 0; j < C.rows(); ++j)
+        for (i = 0; i < C.rows(); ++i)
         {
-            for (i = 0; i < C.cols(); ++i)
+            for (j = 0; j < C.cols(); ++j)
             {
                 for (k = 0; k < C.rows(); ++k)
                 {
