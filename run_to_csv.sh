@@ -13,7 +13,7 @@ do
 	do
 		for ((i=0; i < $num_for_repeat; i++))
 		do
-		./mainCpp/main $dim >> benchmark_j_i_k.csv
+		./main/main $dim >> benchmark_j_i_k.csv
 		done
 	done
 done
