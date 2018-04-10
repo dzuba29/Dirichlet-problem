@@ -1,10 +1,10 @@
 #!/bin/bash
 
-touch benchmark_k_i_j.csv
+touch benchmark_kji.csv
 
 num_for_repeat=5
 
-echo "Threads,Dimension,MultTime,RunTime" > benchmark_k_i_j.csv
+echo "Threads,Dimension,MultTime,RunTime" > benchmark_kji.csv
 
 for omp_threads in 1 2 3 4 
 do
@@ -13,7 +13,7 @@ do
 	do
 		for ((i=0; i < $num_for_repeat; i++))
 		do
-		./main/main $dim >> benchmark_k_i_j.csv
+		./main/main $dim >> benchmark_kji.csv
 		done
 	done
 done

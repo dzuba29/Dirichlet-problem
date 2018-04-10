@@ -13,9 +13,9 @@ class Matrix {
 public:
 
   Matrix(size_t rows, size_t cols)
-    : m_rows(rows)
-    , m_cols(cols)
-    , m_data(rows * cols)
+  : m_rows(rows)
+  , m_cols(cols)
+  , m_data(rows * cols)
   {}
 
 
@@ -46,9 +46,9 @@ public:
 private:
 
   Matrix(size_t rows, size_t cols,const std::vector<double> &data)
-      : m_rows(rows)
-      , m_cols(cols)
-      , m_data(data)
+  : m_rows(rows)
+  , m_cols(cols)
+  , m_data(data)
   {}
 
   size_t m_rows;
@@ -56,7 +56,7 @@ private:
   std::vector<double> m_data;
 
 
- 
+
 };
 
 void benchmark(size_t dim, double mulDuration, double runtimeDuration) {
@@ -83,11 +83,9 @@ std::string ToString_Linear(const Matrix &matrix){ //outmatrix
     }
     outStream << std::endl;
   }
-return outStream.str();
+  return outStream.str();
 
 }
-
-
 
 Matrix MultLinear(const Matrix &A,const Matrix &B){ //bad multi 
 
@@ -95,16 +93,16 @@ Matrix MultLinear(const Matrix &A,const Matrix &B){ //bad multi
   Matrix C(A.rows(),B.cols());
 
   if (A.cols() == B.rows()) {
-        for (size_t i = 0; i < C.rows(); ++i)
-            for (size_t j = 0; j < C.cols(); ++j)
-                for (size_t k = 0; k < C.rows(); ++k)
-                    C(i,j) += A(i,k) * B(k,j);
-  }
-    else
+    for (size_t i = 0; i < C.rows(); ++i)
+      for (size_t j = 0; j < C.cols(); ++j)
+        for (size_t k = 0; k < C.rows(); ++k)
+          C(i,j) += A(i,k) * B(k,j);
+      }
+      else
         throw std::invalid_argument("wrong dims!");
 
-  return C;
-}
+      return C;
+    }
 
 //openmp functions 
 
@@ -125,10 +123,9 @@ std::vector<double> get_random_OpenMp(size_t size){ //get random numbers
   }
 
   return result;
- 
+
 
 }
-
 
 Matrix MultOpenMp(const Matrix &A,const Matrix &B){ 
 
@@ -142,29 +139,28 @@ Matrix MultOpenMp(const Matrix &A,const Matrix &B){
 
     #pragma omp parallel for private(i,j,k,localResult)
 
-        for (i = 0; i < C.rows(); ++i)
+    for (i = 0; i< C.cols(); ++i)
+    {
+      for (j = 0; j < C.cols(); ++j)
+      {   
+        for (k = 0; k < C.rows(); ++k)
         {
-            for (j = 0; j < C.cols(); ++j)
-            {
-                for (k = 0; k < C.rows(); ++k)
-                {
-                   localResult+= A(i,k) * B(k,j);
-                }
-                C(i,j)=localResult;
-            }
-        }
-    
-  }
-    else
-        throw std::invalid_argument("wrong dims!");
+         localResult+= A(i,k) * B(k,j);
+       }
+       C(i,j)=localResult;
+     }
+   }
 
-  return C;
+ }
+ else
+  throw std::invalid_argument("wrong dims!");
+
+return C;
 }
 
 Matrix Matrix::operator*(const Matrix& matrix) {
   return MultOpenMp((*this), matrix);
 }
-
 
 int main(int argc, char* argv[]){
 
@@ -203,8 +199,8 @@ int main(int argc, char* argv[]){
 
   benchmark_to_csv(omp_get_max_threads(), rows, mulDuration.count(), runtimeDuration.count());
   
-	return 0;
+  return 0;
 }
-//flags -Wall -Wextra -Wpedantic -fopenmp or -openmp
+//flags -Wall -Wextra -Wpedantic -fopenmp or 
 //#### ssh student-math-03@fujitsu-hpc-02.narfu.ru
 //#### Cneltyn2014
