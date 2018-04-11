@@ -16,8 +16,8 @@ void solve(const Matrix &u,const Matrix &st_point,double epsilon,double iters,do
 	double max;
 	do{
 		max=0
-		for (size_t i = 0; i < iters+1; ++i){
-			for (size_t j = 0; j < iters+1; ++j){
+		for (size_t i = 1; i < iters+1; ++i){
+			for (size_t j = 1; j < iters+1; ++j){
 
 				double u0=u(i,j);
 				u(i,j)=0.25*(u(i-1,j)+u(i+1,j)+u(i,j-1)+u(i,j+1)-step*step*st_point(i-1,j-1));
