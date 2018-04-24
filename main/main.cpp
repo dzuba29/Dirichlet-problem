@@ -5,7 +5,8 @@
 #include <omp.h>
 
 #include "functions.h"
-
+#include "matrix.h"
+#include "dirichlet.h"
 
 int main(int argc, char* argv[]){
 
@@ -26,23 +27,36 @@ int main(int argc, char* argv[]){
     }
   } 
 
-  Matrix A = Matrix::rand(rows,cols);
-  Matrix B = Matrix::rand(rows,cols);
-  Matrix C(rows,cols);
+  //Matrix A = Matrix::rand(rows,cols);
+  //Matrix B = Matrix::rand(rows,cols);
+  //Matrix C(rows,cols);
+
+  double st=step(rows); // get steps
+  double eps=0.001;
+
+  Matrix f(rows,cols);
+  f=st_point_f(rows,st);
+
+  Matrix u(rows+2,cols+2);
+  u=st_point_u(rows,st);
+
+
   auto initTime = std::chrono::steady_clock::now();
 
-  C=A*B;
+  //C=A*B;
   
+  solve(u,f,eps,rows,st);
+
   auto mulTime = std::chrono::steady_clock::now(); //end
 
-
+   std::cout << ToString(u) << std::endl;
 
   auto mulDuration = std::chrono::duration_cast<std::chrono::duration<double>>(mulTime - initTime);
   auto runtimeDuration = std::chrono::duration_cast<std::chrono::duration<double>>(mulTime - startTime);
 
   //benchmark(rows, mulDuration.count(), runtimeDuration.count());
 
-  benchmark_to_csv(omp_get_max_threads(), rows, mulDuration.count(), runtimeDuration.count());
+  //benchmark_to_csv(omp_get_max_threads(), rows, mulDuration.count(), runtimeDuration.count());
   
   return 0;
 }

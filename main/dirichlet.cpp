@@ -1,37 +1,74 @@
 #include "dirichlet.h"
 
+double function(double x, double y){ // правая часть уравнения, пока ноль, yolo
 
-void start_point(){
+	return 0;
+}
+ 
+double conditions(double x,double y){ //краевые условия
 
-	return;
+	if(x==0)return 1-2*y;
+	if(x==1)return-1+2*y;
+	if(y==0)return 1-2*x;
+	if(y==1)return-1+2*x;
+	else return 0;
 }
 
-void function(){
 
-	return;
+double step(size_t iters){ //шаг h
+
+	return 1.0/(iters+1);
 }
 
-void solve(const Matrix &u,const Matrix &st_point,double epsilon,double iters,double step){
+Matrix st_point_f(size_t iters, double step){ // начальное приближение для f
+
+	Matrix f(iters,iters);
+
+	for (size_t i = 0; i < iters; ++i){
+			for (size_t j = 0; j < iters; ++j){
+
+				f(i,j) = function((i+1)*step, (j+1)*step);
+		}
+	}
+
+
+	return f;
+}
+
+
+Matrix st_point_u(size_t iters,double step){ // начальное приближение для u
+
+	Matrix u(iters+2,iters+2);
+
+	for (size_t i = 1; i < iters+1; ++i){
+			for (size_t j = 1; j < iters+1; ++j){
+
+				u(i,j)=0;
+				u(i,0)=conditions(i*step,0);
+				u(i,iters+1)=conditions(i*step,(iters+1)*step);
+				u(0,j)=conditions(0,j*step);
+				u(iters+1,j)=conditions((iters+1)*step,j*step); //
+		}
+	}
+
+	return u;
+}
+void solve(Matrix &u,const Matrix &f,double epsilon, size_t iters, double step){
 
 	double max;
 	do{
-		max=0
+		max=0;
 		for (size_t i = 1; i < iters+1; ++i){
 			for (size_t j = 1; j < iters+1; ++j){
-
 				double u0=u(i,j);
-				u(i,j)=0.25*(u(i-1,j)+u(i+1,j)+u(i,j-1)+u(i,j+1)-step*step*st_point(i-1,j-1));
+				u(i,j)=0.25*(u(i-1,j)+u(i+1,j)+u(i,j-1)+u(i,j+1)-step*step*f(i-1,j-1));
 				double d=abs(u(i,j)-u0);
 				if (d>max){
 
 					max=d;
 				}
-
 			}
-
 		}
-
-
 	}
-	while(max>epsilon)
+	while(max>epsilon);
 }
