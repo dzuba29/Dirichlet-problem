@@ -11,7 +11,7 @@ void solve(Matrix &u, Matrix &f,double epsilon, size_t iters, double step){
 			for (size_t j = 1; j < iters+1; ++j){
 				double u0=u(i,j);
 				u(i,j)=0.25*(u(i-1,j)+u(i+1,j)+u(i,j-1)+u(i,j+1)-step*step*f(i-1,j-1));
-				double d=fabs(u(i,j)-u0);
+				double d=std::fabs(u(i,j)-u0);
 				if (d>max){
 
 					max=d;
@@ -28,7 +28,7 @@ void solve(Matrix &u, Matrix &f,double epsilon, size_t iters, double step){
 
 double function(double x, double y){ // правая часть уравнения, пока ноль, yolo
 
-	return x+y;
+	return 0;
 }
  
 double conditions(double x,double y){ //краевые условия
