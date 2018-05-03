@@ -49,7 +49,7 @@ int main(int argc, char* argv[]){
 
   auto mulTime = std::chrono::steady_clock::now(); //end
 
-   std::cout << ToString(u) << std::endl;
+  std::cout << ToString(u) << std::endl;
 
   auto mulDuration = std::chrono::duration_cast<std::chrono::duration<double>>(mulTime - initTime);
   auto runtimeDuration = std::chrono::duration_cast<std::chrono::duration<double>>(mulTime - startTime);
