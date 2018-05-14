@@ -18,3 +18,4 @@ fig = plt.figure()
 ax = Axes3D(fig)
 
 ax.plot_surface(X2D,Y2D, Z)
+plt.show()

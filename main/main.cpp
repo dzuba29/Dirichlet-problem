@@ -28,7 +28,7 @@ int main(int argc, char* argv[]){
   } 
 
 
-  Matrix A=solve(99, 0.0001);
+  Matrix A=solve(999, 0.0001);
   auto runTime= std::chrono::steady_clock::now(); //end
 
 
@@ -37,6 +37,5 @@ int main(int argc, char* argv[]){
   
   return 0;
 }
-//flags -Wall -Wextra -Wpedantic -fopenmp or 
-//#### ssh student-math-03@fujitsu-hpc-02.narfu.ru
-//#### Cneltyn2014
+//ssh student-math-03@fujitsu-hpc-02.narfu.ru
+//Cneltyn2014
