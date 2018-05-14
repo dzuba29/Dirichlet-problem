@@ -27,35 +27,12 @@ int main(int argc, char* argv[]){
     }
   } 
 
-  //Matrix A = Matrix::rand(rows,cols);
-  //Matrix B = Matrix::rand(rows,cols);
-  //Matrix C(rows,cols);
 
-  double st=step(rows); // get steps
-  double eps=0.001;
-
-  Matrix f(rows,cols);
-  f=st_point_f(rows,st);
-
-  Matrix u(rows+2,cols+2);
-  u=st_point_u(rows,st);
+  Matrix A=solve(99, 0.0001);
+  auto runTime= std::chrono::steady_clock::now(); //end
 
 
-  auto initTime = std::chrono::steady_clock::now();
-
-  //C=A*B;
-  
-  solve(u,f,eps,rows,st);
-
-  auto mulTime = std::chrono::steady_clock::now(); //end
-
-
-  serial_to_csv(u);
-
-  //std::cout << ToString(u) << std::endl;
-
-  auto mulDuration = std::chrono::duration_cast<std::chrono::duration<double>>(mulTime - initTime);
-  auto runtimeDuration = std::chrono::duration_cast<std::chrono::duration<double>>(mulTime - startTime);
+  auto runtimeDuration = std::chrono::duration_cast<std::chrono::duration<double>>(runTime - startTime);
 
   
   return 0;
