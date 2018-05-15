@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 data = pd.read_csv('surface.csv',header=None)
+time=data[len(data)][0] #get time
+data = data.drop(len(data), 1) #drop last 'time' column
+
 
 Z=np.array(data)
 X = np.arange(0, data.shape[0], 1)
@@ -14,4 +17,5 @@ fig = plt.figure()
 ax = Axes3D(fig)
 
 ax.plot_surface(X2D,Y2D, Z)
+plt.title("Surface\n"+"Time:"+str(time))
 plt.show()

@@ -21,7 +21,7 @@ std::string ToString(const Matrix &matrix){
 
 }
 
-std::string ToCSV(const Matrix &matrix){ //сериализация
+std::string ToCSV(const Matrix &matrix,const double time){ //сериализация(что-то типо того)
 
   std::stringstream outStream;
 
@@ -39,7 +39,7 @@ std::string ToCSV(const Matrix &matrix){ //сериализация
       }
       
     }
-    outStream << std::endl;
+    outStream<<","<<time<<std::endl;
   }
   return outStream.str();
 

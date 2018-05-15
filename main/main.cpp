@@ -10,7 +10,7 @@
 
 int main(int argc, char* argv[]){
 
-  size_t N=99; //size
+  size_t N=999; //size
   double eps=0.0001;
  
   if (argc > 1){
@@ -26,12 +26,12 @@ int main(int argc, char* argv[]){
 
   auto startTime = std::chrono::steady_clock::now();
 
-  Matrix A=solve(N, eps);
+  Matrix u=solve(N, eps);
 
   auto runTime= std::chrono::steady_clock::now(); 
   auto runtimeDuration = std::chrono::duration_cast<std::chrono::duration<double>>(runTime - startTime);
 
-  std::cout<<ToCSV(A)<<std::endl;
+  std::cout<<ToCSV(u,runtimeDuration.count())<<std::endl;
   return 0;
 }
 //ssh student-math-03@fujitsu-hpc-02.narfu.ru
