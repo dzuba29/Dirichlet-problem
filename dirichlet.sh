@@ -12,7 +12,7 @@ do
 	do
 		for ((i=0; i < $num_for_repeat; i++))
 		do
-		./main/main $iters >> surface.csv
+		./main/main $iters > surface.csv
 		done
 	done
 done

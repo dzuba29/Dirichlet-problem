@@ -10,7 +10,7 @@
 
 int main(int argc, char* argv[]){
 
-  size_t N=999; //size
+  size_t N=99; //size
   double eps=0.0001;
  
   if (argc > 1){
