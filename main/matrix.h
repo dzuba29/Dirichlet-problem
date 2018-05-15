@@ -56,6 +56,8 @@ private:
 };
 
 std::string ToString(const Matrix &matrix);
+std::string ToCSV(const Matrix &matrix);
 Matrix MultLinear(const Matrix &A,const Matrix &B);
-
+Matrix MultOpenMp(const Matrix &A,const Matrix &B);
+std::vector<double> get_random_OpenMp(size_t size);
 #endif // __MATRIX_H__

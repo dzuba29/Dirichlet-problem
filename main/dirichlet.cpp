@@ -53,7 +53,34 @@ Matrix first_approx_u(const size_t size,const double h){ //первое приб
 	return u;
 }
 
-Matrix solve(const size_t size, const double eps) {
+Matrix solve(const size_t size, const double eps) { 
+
+	double h = step(size);
+
+	Matrix F=first_approx_f(size,h);
+	Matrix u=first_approx_u(size,h);	
+
+	double max;
+	do {
+	
+		max = 0;
+		for (size_t i = 1; i < size + 1; ++i)
+			for (size_t j = 1; j < size + 1; ++j) {
+				double u0 = u(i, j);
+				double temp = 0.25 * (u(i-1, j) + u(i+1, j) + u(i, j-1) + u(i, j+1) - h*h*F(i - 1, j - 1));
+				u(i, j) = temp;
+				double d = std::fabs(temp - u0);
+
+				if (d > max) {
+					max = d;
+				}
+			}
+		} while (max > eps);
+
+	return u;
+}
+
+Matrix solve_omp(const size_t size, const double eps) { 
 
 	double h = step(size);
 

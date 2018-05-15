@@ -21,6 +21,31 @@ std::string ToString(const Matrix &matrix){
 
 }
 
+std::string ToCSV(const Matrix &matrix){ //сериализация
+
+  std::stringstream outStream;
+
+  for (size_t i = 0; i < matrix.rows(); ++i) {
+
+    for (size_t j = 0; j < matrix.cols(); ++j) {
+
+      if(j==matrix.cols()-1){
+
+        outStream << matrix(i, j) << "";
+      }
+      else{
+
+        outStream << matrix(i, j) << ",";
+      }
+      
+    }
+    outStream << std::endl;
+  }
+  return outStream.str();
+
+}
+
+
 std::vector<double> get_random_OpenMp(size_t size){
 
   std::vector<double>result(size);
