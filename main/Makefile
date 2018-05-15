@@ -33,7 +33,7 @@ dirichlet.o: dirichlet.cpp
 
 
 clean:
-	$(RM) *.o
+	$(RM) *.o main main.o functions.o matrix.o dirichlet.o 
 
 clean_all:
-	$(RM) *.o main
+	$(RM) *.o main main.o functions.o matrix.o dirichlet.o 
