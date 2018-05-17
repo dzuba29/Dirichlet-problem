@@ -14,6 +14,7 @@ double conditions(const double x,const double y){ //краевые услови�
 	if(y==0)return  1-2*x;
 	if(y==1)return -1+2*x;
 	else return 0;
+	return 0;
 }
 
 
@@ -91,6 +92,7 @@ Matrix solve_omp(const size_t size, const double eps) {
 	do {
 	
 		max = 0;
+		#pragma omp parallel for shared(u)
 		for (size_t i = 1; i < size + 1; ++i)
 			for (size_t j = 1; j < size + 1; ++j) {
 				double u0 = u(i, j);

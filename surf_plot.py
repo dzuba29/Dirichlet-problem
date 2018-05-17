@@ -3,7 +3,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-data = pd.read_csv('surface.csv',header=None)
+data = pd.read_csv('surface4.csv',header=None)
+
+
+
 time=data[len(data)][0] #get time
 data = data.drop(len(data), 1) #drop last 'time' column
 

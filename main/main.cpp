@@ -26,7 +26,7 @@ int main(int argc, char* argv[]){
 
   auto startTime = std::chrono::steady_clock::now();
 
-  Matrix u=solve(N, eps);
+  Matrix u=solve_omp(N, eps);
 
   auto runTime= std::chrono::steady_clock::now(); 
   auto runtimeDuration = std::chrono::duration_cast<std::chrono::duration<double>>(runTime - startTime);
