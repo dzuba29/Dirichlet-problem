@@ -21,8 +21,7 @@ std::string ToString(const Matrix &matrix){
 
 }
 
-std::string ToCSV(const Matrix &matrix,const double time){ //сериализация(что-то типо того)
-
+std::string ToCSV(const Matrix &matrix,const double time){ 
   std::stringstream outStream;
 
   for (size_t i = 0; i < matrix.rows(); ++i) {
@@ -77,7 +76,6 @@ Matrix MultOpenMp(const Matrix &A,const Matrix &B){
   if (A.cols() == B.rows()) {
 
     #pragma omp parallel for private(i,j,k,localResult)
-
     for (i = 0; i< C.cols(); ++i)
     {
       for (j = 0; j < C.cols(); ++j)
@@ -96,6 +94,35 @@ Matrix MultOpenMp(const Matrix &A,const Matrix &B){
 
 return C;
 }
+
+Matrix MultOpenMp2(const Matrix &A,const Matrix &B){ 
+
+
+  Matrix C(A.rows(),B.cols());
+
+  size_t i,j,k;
+  
+  if (A.cols() == B.rows()) {
+
+    #pragma omp parallel for shared(A,B,C) private(i,j,k) schedule(guided)
+    for (i = 0; i< C.cols(); ++i)
+    {
+      for (j = 0; j < C.cols(); ++j)
+      {   
+        for (k = 0; k < C.rows(); ++k)
+        {
+         C(i,j)+= A(i,k) * B(k,j);
+        }
+     }
+   }
+
+ }
+ else
+  throw std::invalid_argument("wrong dims!");
+
+return C;
+}
+
 
 Matrix Matrix::operator*(const Matrix& matrix) {
   return MultOpenMp((*this), matrix);
