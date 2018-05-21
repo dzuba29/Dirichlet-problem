@@ -2,7 +2,7 @@
 #include <sstream>
 #include <chrono>
 #include <stdexcept>
-#include <omp.h>
+
 
 #include "functions.h"
 #include "matrix.h"

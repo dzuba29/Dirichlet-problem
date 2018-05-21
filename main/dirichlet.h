@@ -1,6 +1,7 @@
 #ifndef __DIRICHLET_H__
 #define __DIRICHLET_H__
 #include "matrix.h"
+#include <omp.h>
 double step(const size_t size);
 Matrix solve(const size_t size, const double eps);
 Matrix solve_omp(const size_t size, const double eps);

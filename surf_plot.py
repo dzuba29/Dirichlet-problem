@@ -8,6 +8,7 @@ allFiles = glob.glob("*.csv")
 
 data=[]
 time=[]
+threads=['1','2','3','4']
 
 for file in allFiles:
 	temp_data=pd.read_csv(file,header=None)
@@ -31,8 +32,8 @@ for ind,item in enumerate(data):
 	ax.plot_surface(Xgrid,Ygrid, Z)
 	ax.set_xlabel('Z')
 	ax.set_ylabel('X')
-	ax.set_zlabel('Y')
 
+	ax.set_title('Threads: {} \n Runtime: {}'.format(threads[ind],time[ind]))
 plt.tight_layout()
-plt.savefig('yolo.pdf')
+plt.savefig('yolo.png')
 plt.show()
