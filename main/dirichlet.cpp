@@ -145,50 +145,33 @@ Matrix solve_omp(size_t size, const double eps) {
 
 Matrix solve_omp2(size_t size, const double eps) {
 
-	Matrix u_mat(size+2,  size+2);
-	Matrix f_mat(size,  size);
 
-	double h = 1.0 / (size + 1);
+	
+	double h=step(size);
+	Matrix u_mat=first_approx_u(size,h);
+	Matrix f_mat=first_approx_f(size,h);
 
-	// Matrix u_mat=first_approx_u(size,h);
-	// Matrix f_mat=first_approx_f(size,h);
-
-	for (int i = 0; i < size; i++) {
-		for (int j = 0; j < size; j++)
-			f_mat(i,  j) = function((i + 1) * h,  (j + 1) * h);
-	}
-
-	for (int i = 1; i < size + 1; i++) {
-		u_mat(i,  0) = conditions(i * h,  0);
-		u_mat(i,  size + 1) = conditions(i * h,  (size + 1) * h);
-	}
-
-	for (int j = 0; j < size + 2; j++) {
-		u_mat(0,  j) = conditions(0,  j * h);
-		u_mat(size + 1,  j) = conditions((size + 1) * h,  j * h);
-	}
 
 	double max, u0, d;
-	int j, IterCnt = 0;
+	size_t j;
 	std::vector<double> mx(size);
 	do
 	{
-		IterCnt++;
-		// нарастание волны (k - длина фронта волны)
-		for (int k = 1; k < size+1; k++) {
+
+		for (size_t k = 1; k < size+1; k++) {
 			mx[k] = 0;
 			#pragma omp parallel for shared(u_mat, size, max) private(j, u0, d) schedule(static, 1)
-			for (int i = 1; i < k+1; i++) {
+			for (size_t i = 1; i < k+1; i++) {
 				j = k + 1 - i;
 				u0 = u_mat(i, j);
 				u_mat(i, j) = 0.25 * (u_mat(i-1, j) +u_mat(i+1, j) + u_mat(i, j-1) + u_mat(i, j+1) - h*h*f_mat(i-1, j-1));
-				d = fabs(u_mat(i, j) - u0);
+				d = std::fabs(u_mat(i, j) - u0);
 				if (d > mx[i]) mx[i] = d;
 			}
 		}
-		for (int k = size-1; k > 0; k--) {
+		for (size_t k = size-1; k > 0; k--) {
 			#pragma omp parallel for shared(u_mat, size, max) private(j, u0, d) schedule(static, 1)
-			for (int i = size-k+1; i < size+1; i++){
+			for (size_t i = size-k+1; i < size+1; i++){
 				j = 2*size - k - i + 1;
 				u0 = u_mat(i, j);
 				u_mat(i, j) = 0.25 * (u_mat(i-1, j) +u_mat(i+1, j) + u_mat(i, j-1) + u_mat(i, j+1) - h*h*f_mat(i-1, j-1));
@@ -197,7 +180,7 @@ Matrix solve_omp2(size_t size, const double eps) {
 			}
 		}
 		max = 0;
-		for (int i = 1; i < size+1; i++) {
+		for (size_t i = 1; i < size+1; i++) {
 			if (mx[i] > max) max = mx[i];
 		}
 	} while (max > eps);
