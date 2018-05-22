@@ -5,7 +5,7 @@ num_for_repeat=1
 for omp_threads in 1 2 3 4
 do
 	export OMP_NUM_THREADS=$omp_threads
-	for iters in 299
+	for iters in 97
 	do
 		for ((i=0; i < $num_for_repeat; i++))
 		do
@@ -14,4 +14,3 @@ do
 	done
 done
 
-python3 surf_plot.py

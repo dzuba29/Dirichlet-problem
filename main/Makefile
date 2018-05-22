@@ -1,11 +1,11 @@
-TARGET = main
-
 COMPILER = g++
-FLAGS = -std=c++11 -Wall -Wextra -Wpedantic -fopenmp
+
+FLAGS = -std=c++0x -Wall -Wextra -Wpedantic -fopenmp 
+
 
 OS := $(shell uname)
 ifeq ($(OS),Darwin)
-	COMPILER = g++-7
+	COMPILER = g++-8
 endif
 
 ifdef SYSTEMROOT
@@ -14,26 +14,23 @@ else
     RM = rm -f
 endif
 
-default: $(TARGET)
 
-$(TARGET): main.o matrix.o functions.o dirichlet.o
-	$(COMPILER) $(FLAGS) main.o matrix.o functions.o dirichlet.o -o $@
+default: all
 
-main.o: main.cpp
-	$(COMPILER) -c $(FLAGS) main.cpp
+all: clean main.o matrix.o functions.o dirichlet.o
+	$(COMPILER) $(FLAGS) main.o functions.o matrix.o dirichlet.o -o main
 
-functions.o: functions.cpp
-	$(COMPILER) -c $(FLAGS) functions.cpp
+main.o: 
+	$(COMPILER) -c $(FLAGS) main.cpp -o main.o
 
-matrix.o: matrix.cpp
-	$(COMPILER) -c $(FLAGS) matrix.cpp
+functions.o: 
+	$(COMPILER) -c $(FLAGS) functions.cpp -o functions.o
 
-dirichlet.o: dirichlet.cpp
-	$(COMPILER) -c $(FLAGS) dirichlet.cpp
+matrix.o:
+	$(COMPILER) -c $(FLAGS) ./matrix.cpp -o matrix.o
 
 
+dirichlet.o:
+	$(COMPILER) -c $(FLAGS) ./dirichlet.cpp -o dirichlet.o
 clean:
-	$(RM) *.o main main.o functions.o matrix.o dirichlet.o 
-
-clean_all:
-	$(RM) *.o main main.o functions.o matrix.o dirichlet.o 
+	$(RM) *.o main all

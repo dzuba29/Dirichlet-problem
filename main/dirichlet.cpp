@@ -44,21 +44,16 @@ Matrix first_approx_u(const size_t size,const double h){ //первое приб
 	Matrix u(size+2, size+2);
 	size_t i,j;
 
-	#pragma omp parallel sections private(i,j)
-	{
- 
-	    #pragma omp section
-		for (i = 1; i < size + 1; ++i) {
-			u(i, 0) = conditions(i * h, 0);
-			u(i, size + 1) = conditions(i * h, (size + 1) * h);
-		}
-		#pragma omp section
-		for (j = 0; j < size + 2; ++j) {
-			u(0, j) = conditions(0, j * h);
-			u(size + 1, j) = conditions((size + 1) * h, j * h);
-		}	
+	for (i = 1; i < size + 1; ++i) {
+		u(i, 0) = conditions(i * h, 0);
+		u(i, size + 1) = conditions(i * h, (size + 1) * h);
 	}
-		return u;
+	for (j = 0; j < size + 2; ++j) {
+		u(0, j) = conditions(0, j * h);
+		u(size + 1, j) = conditions((size + 1) * h, j * h);
+	}	
+
+	return u;
 }
 
 Matrix solve(const size_t size, const double eps) { 
@@ -88,7 +83,7 @@ Matrix solve(const size_t size, const double eps) {
 	return u;
 }
 
-Matrix solve_omp(const size_t size, const double eps) { 
+Matrix solve_omp(size_t size, const double eps) { 
 
 	double h = step(size);
 
@@ -106,7 +101,7 @@ Matrix solve_omp(const size_t size, const double eps) {
 	do {
 	
 		max = 0;
-		#pragma omp parallel for private(i,j,temp,d,dm) shared(u,max)
+		#pragma omp parallel for shared(u,size,max) private(i,j,temp,d,dm) 
 		
 			for (i = 1; i < size + 1; ++i)
 			{	
@@ -146,4 +141,47 @@ Matrix solve_omp(const size_t size, const double eps) {
 		} while (max > eps);
 
 	return u;
+}
+
+Matrix solve_omp2(size_t size, const double eps) {
+
+	double h = step(size);
+
+	Matrix u_mat=first_approx_u(size,h);
+	Matrix f_mat=first_approx_f(size,h);
+
+	double max, u0, d;
+	int j, IterCnt = 0;
+	std::vector<double> mx(size);
+	do
+	{
+		IterCnt++;
+		// нарастание волны (k - длина фронта волны)
+		for (int k = 1; k < size+1; k++) {
+			mx[k] = 0;
+			#pragma omp parallel for shared(u_mat, size, max) private(j, u0, d) schedule(static, 1)
+			for (int i = 1; i < k+1; i++) {
+				j = k + 1 - i;
+				u0 = u_mat(i, j);
+				u_mat(i, j) = 0.25 * (u_mat(i-1, j) +u_mat(i+1, j) + u_mat(i, j-1) + u_mat(i, j+1) - h*h*f_mat(i-1, j-1));
+				d = fabs(u_mat(i, j) - u0);
+				if (d > mx[i]) mx[i] = d;
+			}
+		}
+		for (int k = size-1; k > 0; k--) {
+			#pragma omp parallel for shared(u_mat, size, max) private(j, u0, d) schedule(static, 1)
+			for (int i = size-k+1; i < size+1; i++){
+				j = 2*size - k - i + 1;
+				u0 = u_mat(i, j);
+				u_mat(i, j) = 0.25 * (u_mat(i-1, j) +u_mat(i+1, j) + u_mat(i, j-1) + u_mat(i, j+1) - h*h*f_mat(i-1, j-1));
+				d = std::fabs(u_mat(i, j) - u0);
+				if (d > mx[i]) mx[i] = d;				
+			}
+		}
+		max = 0;
+		for (int i = 1; i < size+1; i++) {
+			if (mx[i] > max) max = mx[i];
+		}
+	} while (max > eps);
+	return u_mat;
 }
