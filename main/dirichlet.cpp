@@ -145,10 +145,28 @@ Matrix solve_omp(size_t size, const double eps) {
 
 Matrix solve_omp2(size_t size, const double eps) {
 
-	double h = step(size);
+	Matrix u_mat(size+2,  size+2);
+	Matrix f_mat(size,  size);
 
-	Matrix u_mat=first_approx_u(size,h);
-	Matrix f_mat=first_approx_f(size,h);
+	double h = 1.0 / (size + 1);
+
+	// Matrix u_mat=first_approx_u(size,h);
+	// Matrix f_mat=first_approx_f(size,h);
+
+	for (int i = 0; i < size; i++) {
+		for (int j = 0; j < size; j++)
+			f_mat(i,  j) = function((i + 1) * h,  (j + 1) * h);
+	}
+
+	for (int i = 1; i < size + 1; i++) {
+		u_mat(i,  0) = conditions(i * h,  0);
+		u_mat(i,  size + 1) = conditions(i * h,  (size + 1) * h);
+	}
+
+	for (int j = 0; j < size + 2; j++) {
+		u_mat(0,  j) = conditions(0,  j * h);
+		u_mat(size + 1,  j) = conditions((size + 1) * h,  j * h);
+	}
 
 	double max, u0, d;
 	int j, IterCnt = 0;
