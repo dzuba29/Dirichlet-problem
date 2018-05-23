@@ -9,7 +9,7 @@
 
 num_for_repeat=1
 
-for omp_threads in 8 20
+for omp_threads in 1 4 8 20
 do
  export OMP_NUM_THREADS=$omp_threads
  for iters in 998
