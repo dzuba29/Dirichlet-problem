@@ -9,10 +9,10 @@ double function(const double x, const double y){ // правая часть ур
  
 double conditions(const double x,const double y){ //краевые условия
 
-	if(x==0)return 0;
-	if(x==1)return sin(y);
+	if(x==0)return exp(y)+y*y*(1-exp(1))-1;
+	if(x==1)return y;
 	if(y==0)return 0;
-	if(y==1)return sin(x);
+	if(y==1)return x;
 	else return 0;
 	return 0;
 }
