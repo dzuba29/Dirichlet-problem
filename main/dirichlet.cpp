@@ -42,13 +42,13 @@ Matrix first_approx_f(const size_t size,const double h){ //первое приб
 Matrix first_approx_u(const size_t size,const double h){ //первое приближение для u
 
 	Matrix u(size+2, size+2);
-	size_t i,j;
+	
 
-	for (i = 1; i < size + 1; ++i) {
+	for (size_t i = 1; i < size + 1; ++i) {
 		u(i, 0) = conditions(i * h, 0);
 		u(i, size + 1) = conditions(i * h, (size + 1) * h);
 	}
-	for (j = 0; j < size + 2; ++j) {
+	for (size_t j = 0; j < size + 2; ++j) {
 		u(0, j) = conditions(0, j * h);
 		u(size + 1, j) = conditions((size + 1) * h, j * h);
 	}	
@@ -109,7 +109,7 @@ Matrix solve_omp(size_t size, const double eps) {
 				for (j = 1; j < size + 1; ++j) {
 
 					temp = u(i, j);
-					un(i,j) = 0.25 * (u(i-1, j) + u(i+1, j) + u(i, j-1) + u(i, j+1) - h*h*F(i, j));
+					un(i,j) = 0.25 * (u(i-1, j) + u(i+1, j) + u(i, j-1) + u(i, j+1) - h*h*F(i-1, j-1));
 					d = std::fabs(temp - un(i,j));
 
 					if (dm < d) {
