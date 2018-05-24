@@ -9,16 +9,16 @@ double function(const double x, const double y){ // правая часть ур
  
 double conditions(const double x,const double y){ //краевые условия
 
-	if(x==0)return  1-2*y;
-	if(x==1)return -1+2*y;
-	if(y==0)return  1-2*x;
-	if(y==1)return -1+2*x;
+	if(x==0)return 0;
+	if(x==1)return sin(y);
+	if(y==0)return 0;
+	if(y==1)return sin(x);
 	else return 0;
 	return 0;
 }
 
 
-double step(const size_t size){ //шаг 
+double step(const size_t size){ //шаг для сетки
 
 	return 1.0/(size+1.0);
 }
@@ -145,16 +145,12 @@ Matrix solve_omp(size_t size, const double eps) {
 
 Matrix solve_omp2(size_t size, const double eps) {
 
-
-	
 	double h=step(size);
 	Matrix u_mat=first_approx_u(size,h);
 	Matrix f_mat=first_approx_f(size,h);
-
-
 	double max, u0, d;
-	size_t j;
-	std::vector<double> mx(size);
+	size_t j=0;
+	std::vector<double> mx(size+1);
 	do
 	{
 
