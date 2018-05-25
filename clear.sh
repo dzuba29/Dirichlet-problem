@@ -1,1 +1,2 @@
 rm *.csv
+rm *.png
