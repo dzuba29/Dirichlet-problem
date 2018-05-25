@@ -10,10 +10,10 @@
 
 num_for_repeat=3
 
-for omp_threads in 1 2 4 6 8 10 12 14 16 18 20
+for omp_threads in 1 2 4 8 10 18 20
 do
 	export OMP_NUM_THREADS=$omp_threads
-	for iters in 100 500 1000 1500
+	for iters in 100 600 1000 1500
 	do
 		for ((i=0; i < $num_for_repeat; i++))
 		do

@@ -9,10 +9,10 @@ double function(const double x, const double y){ // правая часть ур
  
 double conditions(const double x,const double y){ //краевые условия
 
-	if(x==0)return exp(y)+y*y*(1-exp(1))-1;
-	if(x==1)return y;
+	if(x==0)return 0;
+	if(x==1)return sin(y);
 	if(y==0)return 0;
-	if(y==1)return x;
+	if(y==1)return sin(x);
 	else return 0;
 	return 0;
 }
@@ -150,14 +150,15 @@ Matrix solve_omp2(size_t size, const double eps) {
 	Matrix f_mat=first_approx_f(size,h);
 	double max, u0, d;
 	size_t j=0;
+	size_t i=0;
 	std::vector<double> mx(size+1);
 	do
 	{
 
 		for (size_t k = 1; k < size+1; k++) {
 			mx[k] = 0;
-			#pragma omp parallel for shared(u_mat, size, max) private(j, u0, d) schedule(static, 1)
-			for (size_t i = 1; i < k+1; i++) {
+			#pragma omp parallel for shared(u_mat,k,mx) private(i,j,u0,d)
+			for (i = 1; i < k+1; i++) {
 				j = k + 1 - i;
 				u0 = u_mat(i, j);
 				u_mat(i, j) = 0.25 * (u_mat(i-1, j) +u_mat(i+1, j) + u_mat(i, j-1) + u_mat(i, j+1) - h*h*f_mat(i-1, j-1));
@@ -166,8 +167,8 @@ Matrix solve_omp2(size_t size, const double eps) {
 			}
 		}
 		for (size_t k = size-1; k > 0; k--) {
-			#pragma omp parallel for shared(u_mat, size, max) private(j, u0, d) schedule(static, 1)
-			for (size_t i = size-k+1; i < size+1; i++){
+			#pragma omp parallel for shared(u_mat,k,mx) private(i,j,u0,d)
+			for (i= size-k+1; i < size+1; i++){
 				j = 2*size - k - i + 1;
 				u0 = u_mat(i, j);
 				u_mat(i, j) = 0.25 * (u_mat(i-1, j) +u_mat(i+1, j) + u_mat(i, j-1) + u_mat(i, j+1) - h*h*f_mat(i-1, j-1));
