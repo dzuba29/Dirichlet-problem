@@ -7,7 +7,7 @@ import glob
 
 grids=[1000,1500,600,100] # my grids for dirichlet
 threads_pc= [i for i in range(1,5)] #threads of pc
-threads_cluster= [i for i in range(1,21)] #threads of cluster
+threads_cluster= [1 ,2 ,4 ,8 ,10 ,18 ,20] #threads of cluster
 gm={} #means for grids
 
 def means_dic(grids,thread_count): # get mean value of grids for current count of threads,returns dictionary
@@ -33,7 +33,7 @@ def means_list(grid,thread_count): #same as previous, just tooooooooOOOOOOOOO la
 	grids_means.append(round(np.mean(temp_means),3))
 	return grids_means
 
-def draw_surf(dic): #draw surface for every grid + runtime + gridname
+def draw_surf(dic,t): #draw surface for every grid + runtime + gridname
 	fig = plt.figure(figsize=(8,12))
 	files=glob.glob("surface1_*_0.csv")
 	data=[]
@@ -52,10 +52,12 @@ def draw_surf(dic): #draw surface for every grid + runtime + gridname
 		ax.set_xlabel('Z')
 		ax.set_ylabel('X')
 		ax.set_title('Grid {} \n Runtime:{} '.format(grid[-ind],mean_time[-ind]))
-	fig.suptitle('Threads: 1') 
+	fig.suptitle('Threads: {}'.format(t)) 
 	plt.tight_layout();
-	plt.savefig('surface1.png');plt.grid(True);plt.show()
-import matplotlib.pyplot as plt
+	plt.savefig('surface{}.pdf'.format(t));
+	plt.savefig('surface{}.svg'.format(t));
+	plt.grid(True);plt.show()
+
 def draw_plot(grids,threads):
 	fig = plt.figure()
 	for grid in grids:
@@ -77,12 +79,22 @@ def draw_plot(grids,threads):
 		ac.set_title('Acceleration'); ac.set_xlabel('threads'); ac.set_ylabel('acceleration')
 		eff.set_title('Efficiency'.format(grid,grid)); eff.set_xlabel('threads'); eff.set_ylabel('efficiency')	
 
-		rt.plot(threads,m,marker='.')
-		ac.plot(threads,ott/m,marker='.')
-		eff.plot(threads,ott/m/np.array(threads),marker='.')
+		rt.plot(threads,m,marker='.',label="Grid {}x{}".format(grid,grid))
+		rt.legend(loc=1, fontsize = 'x-small')
+		ac.plot(threads,ott/m,marker='.',label="Grid {}x{}".format(grid,grid))
+		ac.legend(loc=2, fontsize = 'x-small')
+		eff.plot(threads,ott/m/np.array(threads),marker='.',label="Grid {}x{}".format(grid,grid))
+		eff.legend(loc=4, fontsize = 'x-small')
 		rt.grid(True);ac.grid(True);eff.grid(True)
 	plt.tight_layout()
-	plt.legend()
+	plt.legend(fontsize = 'x-small')
+	plt.savefig('eff_plots.pdf')
+	plt.savefig('eff_plots.svg')
 	plt.show()
-	plt.savefig('eff_plots.png')
-draw_plot(sorted(grids),sorted(threads_pc))
+	
+
+
+gm=means_dic(grids,4)
+draw_surf(gm,4)
+# draw_plot(sorted(grids),sorted(threads_cluster))
+# draw_plot(sorted(grids),sorted(threads_pc))
