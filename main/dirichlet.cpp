@@ -94,68 +94,7 @@ Matrix solve(const size_t size, const double eps)
 	return u;
 }
 
-Matrix solve_omp(size_t size, const double eps)
-{
-
-	double h = step(size);
-
-	Matrix F = first_approx_f(size, h);
-	Matrix u = first_approx_u(size, h);
-
-	Matrix un = u;
-
-	size_t i, j;
-	double max, dm, d, temp;
-
-	omp_lock_t lock;
-	omp_init_lock(&lock);
-
-	do
-	{
-
-		max = 0;
-#pragma omp parallel for shared(u, size, max) private(i, j, temp, d, dm)
-
-		for (i = 1; i < size + 1; ++i)
-		{
-			dm = 0;
-			for (j = 1; j < size + 1; ++j)
-			{
-
-				temp = u(i, j);
-				un(i, j) = 0.25 * (u(i - 1, j) + u(i + 1, j) + u(i, j - 1) + u(i, j + 1) - h * h * F(i - 1, j - 1));
-				d = std::fabs(temp - un(i, j));
-
-				if (dm < d)
-				{
-					dm = d;
-				}
-
-				omp_set_lock(&lock);
-				if (max < dm)
-				{
-					max = dm;
-				}
-				omp_unset_lock(&lock);
-			}
-		}
-
-		for (i = 1; i < size + 1; ++i)
-		{
-
-			for (j = 1; j < size + 1; ++j)
-			{
-
-				u(i, j) = un(i, j);
-			}
-		}
-
-	} while (max > eps);
-
-	return u;
-}
-
-Matrix solve_omp2(size_t size, const double eps)
+Matrix solve_omp(const size_t size, const double eps)
 {
 
 	double h = step(size);
@@ -203,4 +142,8 @@ Matrix solve_omp2(size_t size, const double eps)
 		}
 	} while (max > eps);
 	return u_mat;
+}
+
+Matrix solve_mpi(const size_t size, const double eps)
+{
 }

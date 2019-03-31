@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 
   auto startTime = std::chrono::steady_clock::now();
 
-  Matrix u = solve_omp2(N, eps);
+  // Matrix u = solve_omp2(N, eps);
 
   auto runTime = std::chrono::steady_clock::now();
   auto runtimeDuration = std::chrono::duration_cast<std::chrono::duration<double>>(runTime - startTime);
@@ -37,5 +37,4 @@ int main(int argc, char *argv[])
   std::cout << ToCSV(u, runtimeDuration.count()) << std::endl;
   return 0;
 }
-//ssh student-math-03@fujitsu-hpc-02.narfu.ru
-//Cneltyn2014
+
