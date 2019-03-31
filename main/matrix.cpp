@@ -5,125 +5,130 @@
 #include <stdexcept>
 #include <sstream>
 
-std::string ToString(const Matrix &matrix){ 
+std::string ToString(const Matrix &matrix)
+{
 
   std::stringstream outStream;
 
-  for (size_t i = 0; i < matrix.rows(); ++i) {
+  for (size_t i = 0; i < matrix.rows(); ++i)
+  {
 
-    for (size_t j = 0; j < matrix.cols(); ++j) {
+    for (size_t j = 0; j < matrix.cols(); ++j)
+    {
 
       outStream << matrix(i, j) << " ";
     }
     outStream << std::endl;
   }
   return outStream.str();
-
 }
 
-std::string ToCSV(const Matrix &matrix,const double time){ 
+std::string ToCSV(const Matrix &matrix, const double time)
+{
   std::stringstream outStream;
 
-  for (size_t i = 0; i < matrix.rows(); ++i) {
+  for (size_t i = 0; i < matrix.rows(); ++i)
+  {
 
-    for (size_t j = 0; j < matrix.cols(); ++j) {
+    for (size_t j = 0; j < matrix.cols(); ++j)
+    {
 
-      if(j==matrix.cols()-1){
+      if (j == matrix.cols() - 1)
+      {
 
         outStream << matrix(i, j) << "";
       }
-      else{
+      else
+      {
 
         outStream << matrix(i, j) << ",";
       }
-      
     }
-    outStream<<","<<time<<std::endl;
+    outStream << "," << time << std::endl;
   }
   return outStream.str();
-
 }
 
+std::vector<double> get_random_OpenMp(size_t size)
+{
 
-std::vector<double> get_random_OpenMp(size_t size){
+  std::vector<double> result(size);
 
-  std::vector<double>result(size);
-
-  #pragma omp parallel shared(result)
+#pragma omp parallel shared(result)
   {
     std::random_device rd;
     std::mt19937_64 gen(rd());
-    std::cauchy_distribution<double>dis(1, 2);
+    std::cauchy_distribution<double> dis(1, 2);
 
-    #pragma omp for schedule(static)
-    for (size_t i = 0; i < size; i++) {
+#pragma omp for schedule(static)
+    for (size_t i = 0; i < size; i++)
+    {
       result[i] = dis(gen);
     }
   }
 
   return result;
-
 }
 
-Matrix MultOpenMp(const Matrix &A,const Matrix &B){ 
+Matrix MultOpenMp(const Matrix &A, const Matrix &B)
+{
 
+  Matrix C(A.rows(), B.cols());
 
-  Matrix C(A.rows(),B.cols());
+  size_t i, j, k;
+  double localResult = 0;
 
-  size_t i,j,k;
-  double localResult=0;
-  
-  if (A.cols() == B.rows()) {
+  if (A.cols() == B.rows())
+  {
 
-    #pragma omp parallel for private(i,j,k,localResult)
-    for (i = 0; i< C.cols(); ++i)
+#pragma omp parallel for private(i, j, k, localResult)
+    for (i = 0; i < C.cols(); ++i)
     {
       for (j = 0; j < C.cols(); ++j)
-      {   
+      {
         for (k = 0; k < C.rows(); ++k)
         {
-         localResult+= A(i,k) * B(k,j);
-       }
-       C(i,j)=localResult;
-     }
-   }
-
- }
- else
-  throw std::invalid_argument("wrong dims!");
-
-return C;
-}
-
-Matrix MultOpenMp2(const Matrix &A,const Matrix &B){ 
-
-
-  Matrix C(A.rows(),B.cols());
-
-  size_t i,j,k;
-  
-  if (A.cols() == B.rows()) {
-
-    #pragma omp parallel for shared(A,B,C) private(i,j,k) schedule(guided)
-    for (i = 0; i< C.cols(); ++i)
-    {
-      for (j = 0; j < C.cols(); ++j)
-      {   
-        for (k = 0; k < C.rows(); ++k)
-        {
-         C(i,j)+= A(i,k) * B(k,j);
+          localResult += A(i, k) * B(k, j);
         }
-     }
-   }
+        C(i, j) = localResult;
+      }
+    }
+  }
+  else
+    throw std::invalid_argument("wrong dims!");
 
- }
- else
-  throw std::invalid_argument("wrong dims!");
-
-return C;
+  return C;
 }
 
+Matrix MultOpenMp2(const Matrix &A, const Matrix &B)
+{
 
-Matrix Matrix::operator*(const Matrix& matrix) {
+  Matrix C(A.rows(), B.cols());
+
+  size_t i, j, k;
+
+  if (A.cols() == B.rows())
+  {
+
+#pragma omp parallel for shared(A, B, C) private(i, j, k) schedule(guided)
+    for (i = 0; i < C.cols(); ++i)
+    {
+      for (j = 0; j < C.cols(); ++j)
+      {
+        for (k = 0; k < C.rows(); ++k)
+        {
+          C(i, j) += A(i, k) * B(k, j);
+        }
+      }
+    }
+  }
+  else
+    throw std::invalid_argument("wrong dims!");
+
+  return C;
+}
+
+Matrix Matrix::operator*(const Matrix &matrix)
+{
   return MultOpenMp((*this), matrix);
 }
