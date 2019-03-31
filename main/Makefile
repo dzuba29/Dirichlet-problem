@@ -1,4 +1,4 @@
-COMPILER = g++
+COMPILER = mpic++
 
 FLAGS = -std=c++0x -Wall -Wextra -Wpedantic -fopenmp 
 

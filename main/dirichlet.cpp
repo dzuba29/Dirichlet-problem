@@ -144,6 +144,8 @@ Matrix solve_omp(const size_t size, const double eps)
 	return u_mat;
 }
 
-Matrix solve_mpi(const size_t size, const double eps)
+Matrix solve_mpi(const size_t size, const double eps, const size_t ProcRank, const size_t ProcNum)
 {
+	return 0;
+
 }

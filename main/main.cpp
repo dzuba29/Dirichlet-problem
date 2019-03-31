@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
   auto runTime = std::chrono::steady_clock::now();
   auto runtimeDuration = std::chrono::duration_cast<std::chrono::duration<double>>(runTime - startTime);
 
-  std::cout << ToCSV(u, runtimeDuration.count()) << std::endl;
+  // std::cout << ToCSV(u, runtimeDuration.count()) << std::endl;
   return 0;
 }
 
